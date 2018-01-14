@@ -1,4 +1,4 @@
-#Assignment details:
+# Assignment details:
 
 1. Ask the user three questions and store their input as variables. 
 2. Combine the three answers into a sentence of your choosing. 
