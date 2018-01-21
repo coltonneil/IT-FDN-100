@@ -38,6 +38,7 @@ Total Price: ${}
 You have been assigned an ID number of BIN_503. Please refer to this ID number if you have any questions"""
 
 
+# TODO: Break menu logic out into function
 # present user with menu options new report, load saved report, exit program
 def main_menu():
     print("-- Main menu --\n[1] - New report\n[2] - Load report\n[3] - Help\n[4] - Edit tax and fees\n[5] - Quit")
@@ -58,6 +59,7 @@ def main_menu():
         main_menu()
 
 
+# TODO: break pickle logic out into function
 # sets the sales tax, licensing fee, and dealer prep fee
 def set_fees():
     try:
@@ -71,7 +73,7 @@ def set_fees():
         tax_rate = validate_float("tax rate",True)
         prep_fee = validate_float("preparation fee",True)
         license_fee = validate_float("license fee", True)
-        fee_dict = {"tax_rate": tax_rate, "prep_fee": prep_fee, "license_fee": license_fee}
+        fee_dict = {"tax rate": tax_rate, "prep fee": prep_fee, "license fee": license_fee}
         pickle.dump(fee_dict, fee_data_out)
         fee_data_out.close()
         set_fees()
@@ -82,19 +84,39 @@ def edit_fees():
     try:
         fee_data_in = open("fees.txt", "rb")
         global fees
+        print(fees)
         fees = pickle.load(fee_data_in)
-        print(fees.get("tax_rate"))
         fee_data_in.close()
     except IOError:
-        #fee_data_out = open("fees.txt", "wb")
+        fee_data_out = open("fees.txt", "wb")
         tax_rate = validate_float("tax rate",True)
         prep_fee = validate_float("preparation fee",True)
         license_fee = validate_float("license fee", True)
-        fee_dict = {"tax_rate": tax_rate, "prep_fee": prep_fee, "license_fee": license_fee}
-        #pickle.dump(fee_dict, fee_data_out)
-        #fee_data_out.close()
-        #set_fees()
-
+        fee_dict = {"tax rate": tax_rate, "prep fee": prep_fee, "license fee": license_fee}
+        pickle.dump(fee_dict, fee_data_out)
+        fee_data_out.close()
+        set_fees()
+    lookup_dict = {}
+    for index, fee in enumerate(fees):
+        print("[" + str(index+1) + "] - " + fee)
+        lookup_dict[index+1] = fee
+    while True:
+        try:
+            selection = int(input("Select a fee to edit: "))
+        except ValueError:
+            print("Selection must be a number")
+            continue
+        if selection < 1 or selection > len(fees) + 1:
+            print("Choose a number from the list")
+            continue
+        else:
+            break
+    tmp_fee = validate_float(lookup_dict[selection],True)
+    fees.update({lookup_dict[selection]:tmp_fee})
+    fee_data_out = open("fees.txt", "wb")
+    pickle.dump(fees, fee_data_out)
+    fee_data_out.close()
+    print("fees updated")
 
 # start a new report
 def new_report():
