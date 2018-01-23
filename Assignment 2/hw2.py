@@ -1,8 +1,11 @@
-import pickle
-import os
+"""
+Collects data about a customer and information about the purchase of a vehicle and formats this information into a sales
+report. Allows for viewing, saving, loading, and deleting of sales reports. Also allows user to modify fees and taxes.
+"""
 
-"""
-"""
+import os
+import pickle
+
 menu = ["New report", "Load report", "Delete Report", "Edit tax and fees", "Quit"]
 
 report_options = ["View report", "Save report", "Edit report", "Discard report"]
@@ -74,7 +77,7 @@ def report_details():
     buyer_phone = validate_phone()
     car = get_car()
     car_price = validate_float("car price")
-    user_id = gen_id(buyer_name,buyer_addr)
+    user_id = gen_id(buyer_name, buyer_addr)
     report = build_report(buyer_name, buyer_addr, buyer_phone, car, car_price, user_id)
     report_menu(report, buyer_name, buyer_addr, buyer_phone, car, car_price, user_id)
 
@@ -128,7 +131,7 @@ def save_report(report, user_id):
     report_file = open("./reports/" + user_id + ".txt", "w")
     report_file.write(report)
     report_file.flush()
-    report_file.close
+    report_file.close()
     print("Report saved to {}.txt\nReturning to main menu".format(user_id))
     main_menu()
 
@@ -210,8 +213,8 @@ def get_fees():
         print("\n--- Setup ---\n")
         print("Fees not found. Please set fees.")
         fee_data_out = open("./settings/fees.txt", "wb")
-        tax_rate = validate_float("tax rate",True)
-        prep_fee = validate_float("preparation fee",True)
+        tax_rate = validate_float("tax rate", True)
+        prep_fee = validate_float("preparation fee", True)
         license_fee = validate_float("license fee", True)
         fee_dict = {"tax rate": tax_rate, "prep fee": prep_fee, "license fee": license_fee}
         pickle.dump(fee_dict, fee_data_out)
@@ -225,7 +228,7 @@ def edit_fees():
     get_fees()
     selection = display_options(fees, "Select a fee to edit: ")
     tmp_fee = validate_float(selection, True)
-    fees.update({selection:tmp_fee})
+    fees.update({selection: tmp_fee})
     fee_data_out = open("./settings/fees.txt", "wb")
     pickle.dump(fees, fee_data_out)
     fee_data_out.close()
@@ -237,7 +240,7 @@ def edit_fees():
 def display_options(options, prompt):
     lookup_dict = {}
     for index, item in enumerate(options):
-        print("[{}] - {}".format(str(index+1), item))
+        print("[{}] - {}".format(str(index + 1), item))
         if type(options) == dict:
             lookup_dict[index + 1] = item
     while True:
@@ -258,23 +261,23 @@ def display_options(options, prompt):
 
 
 # generates user id which is the last 4 of the buyers last name and their zip code separated by an underscore
-def gen_id(full_name,addr):
+def gen_id(full_name, addr):
     name_list = full_name.split(" ")
     lname = name_list[-1]
-    zip = addr[-5:]
-    return lname[-4:].upper() + "_" + zip
+    zip_code = addr[-5:]
+    return "{} {}".format(lname[-4:].upper(), zip_code)
 
 
 # allow user to select make and model from available car data
 def get_car():
     tmp_make = display_options(car_data, "Select a make: ")
-    tmp_model = car_data.get(tmp_make)[display_options(car_data.get(tmp_make), "Select a model: ")-1]
-    return tmp_make + " " + tmp_model
+    tmp_model = car_data.get(tmp_make)[display_options(car_data.get(tmp_make), "Select a model: ") - 1]
+    return "{} {}".format(tmp_make, tmp_model)
 
 
 # calculates the total price including taxes and fees
 def calculate_total(price, tax):
-    return round(price + tax + fees.get("prep fee") + fees.get("license fee"),2)
+    return round(price + tax + fees.get("prep fee") + fees.get("license fee"), 2)
 
 
 # calculates the tax due based on the price of the car and the tax rate in the settings file
@@ -287,7 +290,7 @@ def calculate_tax(price):
 def validate_name():
     tmp_fname = required_string("Buyers first name: ")
     tmp_lname = required_string("Buyers last name: ")
-    return tmp_fname + " " + tmp_lname
+    return "{} {}".format(tmp_fname, tmp_lname)
 
 
 # get and validate the buyers address
@@ -296,7 +299,7 @@ def validate_addr():
     tmp_city = required_string("Buyers city: ")
     tmp_state = required_string("Buyers state code: ", required_length=2)
     tmp_zip = required_string("Buyers zip code: ", required_length=5)
-    return tmp_street_addr + ", " + tmp_city + ", " + tmp_state + " " + tmp_zip
+    return "{}, {}, {} {}".format(tmp_street_addr, tmp_city, tmp_state, tmp_zip)
 
 
 # get and validate the buyers phone
@@ -314,7 +317,7 @@ def validate_phone(required_length=12):
             print("Must be numeric")
         else:
             break
-    return "(" + tmp_phone[0] + ") " + tmp_phone[1] + "-" + tmp_phone[2]
+    return "({}) {}-{}".format(tmp_phone[0], tmp_phone[1], tmp_phone[2])
 
 
 # gets and validates floats
@@ -330,7 +333,7 @@ def validate_float(data_name, allow_zero=False):
             continue
         else:
             break
-    return round(tmp_float,2)
+    return round(tmp_float, 2)
 
 
 # gets a string from the user and insures it meets set specifications
