@@ -18,17 +18,29 @@ car_data = {
 
 report_template = """Hello {}!
 
-Thank you for your purchase of a {}. Following is a break down of your total price:
+Congratulations on being the proud owner of a brand new {}!. 
 
-Sales Price: ${:0.2f}
+Below you will find a sales report as well as a record of the personal information we have on file:
 
-Tax: ${:0.2f}
+--- Sales Report ---
 
-Licensing Fee: ${:0.2f}
+Sales Price:        ${:0.2f}
 
-Dealer Prep Fee: ${:0.2f}
+Tax:                ${:0.2f}
 
-Total Price: ${:0.2f}
+Licensing Fee:      ${:0.2f}
+
+Dealer Prep Fee:    ${:0.2f}
+
+Total Price:        ${:0.2f}
+
+--- Personal Information ---
+
+Name: {}
+
+Address: {}
+
+Phone: {}
 
 You have been assigned an ID number of {}. Please refer to this ID number if you have any questions"""
 
@@ -78,6 +90,9 @@ def build_report(buyer_name, buyer_addr, buyer_phone, car, car_price, user_id):
         fees.get("license fee"),
         fees.get("prep fee"),
         calculate_total(car_price, tax_amount),
+        buyer_name,
+        buyer_addr,
+        buyer_phone,
         user_id
     )
     return compiled_report
@@ -103,7 +118,7 @@ def report_menu(compiled_report, buyer_name, buyer_addr, buyer_phone, car, car_p
 
 # print report to the screen
 def print_report(report):
-    print("\n" + report + "\n")
+    print("\n{}\n".format(report))
     print("\nPlease review the sales report for accuracy.")
 
 
@@ -112,8 +127,9 @@ def save_report(report, user_id):
     print("\n--- Save Report ---\n")
     report_file = open("./reports/" + user_id + ".txt", "w")
     report_file.write(report)
+    report_file.flush()
     report_file.close
-    print("Report saved to " + user_id + ".txt\nReturning to main menu")
+    print("Report saved to {}.txt\nReturning to main menu".format(user_id))
     main_menu()
 
 
@@ -126,7 +142,7 @@ def edit_report(compiled_report, buyer_name, buyer_addr, buyer_phone, car, car_p
     elif selection == 2:
         buyer_addr = validate_addr()
     elif selection == 3:
-        buyer_phone = "(912) 247-4965"
+        buyer_phone = validate_phone()
     elif selection == 4:
         car = get_car()
     elif selection == 5:
@@ -167,7 +183,7 @@ def delete_report():
     if os.path.exists("./reports/" + user_id + ".txt"):
         print("Report found")
         while True:
-            choice = input("Confirm deletion of " + user_id + ".txt (y/n): ")
+            choice = input("Confirm deletion of {}.txt (y/n): ".format(user_id))
             if choice.lower() == "y":
                 os.remove("./reports/" + user_id + ".txt")
                 print("Report deleted, returning to main menu\n")
@@ -221,7 +237,7 @@ def edit_fees():
 def display_options(options, prompt):
     lookup_dict = {}
     for index, item in enumerate(options):
-        print("[" + str(index+1) + "] - " + item)
+        print("[{}] - {}".format(str(index+1), item))
         if type(options) == dict:
             lookup_dict[index + 1] = item
     while True:
@@ -305,12 +321,12 @@ def validate_phone(required_length=12):
 def validate_float(data_name, allow_zero=False):
     while True:
         try:
-            tmp_float = float(input("Input " + data_name + ": "))
+            tmp_float = float(input("Input {}: ".format(data_name)))
         except ValueError:
-            print(data_name + " must be a number")
+            print("{} must be a number".format(data_name))
             continue
         if tmp_float < 1 and not allow_zero:
-            print(data_name + " must be greater than 0")
+            print("{} must be greater than 0".format(data_name))
             continue
         else:
             break
