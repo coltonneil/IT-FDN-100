@@ -7,3 +7,4 @@
 * Print out the number and index of each item in the list that is even
 * Sum all the odd numbers in the list using a for loop
 * Print out the cumulative sum calculated above
+* Stretch - add fizzbuzz using a for loop

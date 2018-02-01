@@ -32,12 +32,28 @@ def get_num(num_min):
     return tmp_num
 
 
+# checks if number is divisible by 3, 5, or both and returns fizz, buzz, or fizzbuzz as a string
+def fizzbuzz(num):
+    if num % 3 == 0 and num % 5 == 0:
+        result = " - fizzbuzz"
+    # if num is divisible by 3
+    elif num % 3 == 0:
+        result = " - fizz"
+    # if num is divisible by 5
+    elif num % 5 == 0:
+        result = " - buzz"
+    # num was not divisible by 3 or 5
+    else:
+        result = ""
+    return result
+
+
 # print the even numbers and their index, append all odd numbers to odds
 def display_results(start, end, numbers, odds):
     print("The even numbers and indexes between {} and {} are: ".format(start, end))
     for index, number in enumerate(numbers):
         if number % 2 == 0:
-            print("{} is at the index {}".format(number, index))
+            print("{} is at the index {} {}".format(number, index, fizzbuzz(number)))
         else:
             odds.append(number)
 
