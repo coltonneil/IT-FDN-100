@@ -1,49 +1,18 @@
 #!/usr/bin/env python3
 
 """
-requires Python3
+requires Python3 and Banking module (in same directory as this script)
 
-Script defines and creates a "bank account" which takes an initial balance and allows users to withdraw, deposit, check
-balance, and view transaction history.
+Script allows user to interface with an Account object to do common banking tasks like deposit, withdraw, check balance,
+view transactions, and create new accounts
 """
 
-# define class Account
-class Account:
-    # initialize account with balance as initial, create empty transaction list, add initial transaction to list
-    def __init__(self, initial):
-        self.balance = initial
-        self.transactions = []
-        self.add_transaction(initial,"+")
-
-    # subtracts amount from balance and logs it in transactions
-    def withdraw(self, amount):
-        self.balance -= amount
-        self.add_transaction(amount, "-")
-
-    # adds amount to balance and logs it in transactions
-    def deposit(self, amount):
-        self.balance += amount
-        self.add_transaction(amount, "+")
-
-    # return the balance
-    def get_balance(self):
-        return self.balance
-
-    # logs the details of a transaction
-    def add_transaction(self, amount, symbol):
-        log = "Trans #{} \t|\t {}${:.2f} \t|\t Balance: ${:.2f}".format(
-            len(self.transactions)+1, symbol, amount, self.get_balance()
-        )
-        self.transactions.insert(0,log)
-
-    # return transaction list
-    def get_transactions(self):
-        return self.transactions
+from Banking import Account
 
 
-# presents users with options for thier account
+# presents users with options for their account
 def main_menu(account):
-    menu = ["Deposit", "Withdraw", "Check Balance", "View Transaction History", "Quit"]
+    menu = ["Deposit", "Withdraw", "Check Balance", "View Transaction History", "New Account", "Quit"]
     print("\n--- Main menu ---\n")
     selection = display_options(menu, "Choose an option: ")
     print(selection)
@@ -56,6 +25,8 @@ def main_menu(account):
     elif selection == 4:
         transactions(account)
     elif selection == 5:
+        create_account()
+    elif selection == 6:
         print("Exiting...")
         exit(0)
     else:
@@ -152,7 +123,7 @@ def validate_float(data_name, allow_zero=False):
 
 # prevents output from being pushed away by the main menu by asking the user to press a key to continue
 def main_menu_prompt(user_account):
-    input("\nPress any key to return to the main menu: ")
+    input("\nPress enter to return to the main menu: ")
     main_menu(user_account)
 
 
@@ -163,4 +134,5 @@ def create_account():
     main_menu(user_account)
 
 
-create_account()
+if __name__ == '__main__':
+    create_account()
