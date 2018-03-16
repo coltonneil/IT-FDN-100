@@ -15,26 +15,18 @@ import os
 def create_customer():
     clear_output()
     email = validation.required_string("Email:", 25, 0, "[^@]+@[^@]+\.[^@]+")
-    #email = "test@test.com"
-    #if not Customer.is_unique(email):
-    #    print("Email already exists in the database.")
-    #    create_customer()
-    #    return None
-    #password = validation.required_string("Password: ")
-    password = "password"
+    if not Customer.is_unique(email):
+        print("Email already exists in the database.")
+        create_customer()
+        return None
+    password = validation.required_string("Password: ")
     password = base64.b64encode(password.encode('utf-8'))
     first_name = validation.required_string('First name: ')
-    #last_name = validation.required_string('Last name: ')
-    #first_name = "Tom"
-    last_name = "Test"
+    last_name = validation.required_string('Last name: ')
     street_addr = validation.required_string('Street address: ')
-    #street_addr = "123 Main St"
-    #city = validation.required_string('City: ')
-    #state = validation.required_string('State: ', 2, 2)
-    #zip = validation.required_string('Zip: ', 5, 5)
-    city = "Testville"
-    state = "WA"
-    zip = "12345"
+    city = validation.required_string('City: ')
+    state = validation.required_string('State: ', 2, 2)
+    zip = validation.required_string('Zip: ', 5, 5)
     user = Customer(email, password, first_name, last_name, street_addr, city, state, zip)
     account = create_account(user)
     account_menu(user, account)

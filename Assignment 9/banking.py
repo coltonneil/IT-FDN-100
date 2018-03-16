@@ -12,6 +12,7 @@ connection = sqlite3.connect('Bank.db')
 # connection = sqlite3.connect('Bank_Empty.db')
 
 
+# define customer class
 class Customer:
     def __init__(self, email, password, first_name, last_name, street_addr, city, state, zip, customer_id=""):
         self.customer_id = customer_id
@@ -26,6 +27,7 @@ class Customer:
         if customer_id == "":
             self.insert()
 
+    # insert customer into DB
     def insert(self):
         cursor = connection.cursor()
         cursor.execute("INSERT INTO customers "
@@ -37,6 +39,7 @@ class Customer:
         record_set = cursor.execute("SELECT customer_id FROM customers WHERE email=?", (self.email,))
         self.customer_id = record_set.fetchone()[0]
 
+    # check is email is in DB
     @staticmethod
     def is_unique(email):
         cursor = connection.cursor()
@@ -63,6 +66,7 @@ class Account:
             self.balance = initial
             self.transactions = transactions
 
+    # insert account into DB
     def insert(self):
         cursor = connection.cursor()
         cursor.execute("INSERT INTO accounts "
@@ -73,6 +77,7 @@ class Account:
         record_set = cursor.execute("SELECT account_id FROM accounts WHERE customer_id=?", (self.customer_id,))
         self.account_id = record_set.fetchone()[0]
 
+    # update account in DB
     def update(self):
         cursor = connection.cursor()
         cursor.execute("UPDATE accounts "
@@ -112,6 +117,7 @@ class Account:
     def get_transactions(self):
         return self.transactions
 
+    # return list of all accounts formatted as strings
     @staticmethod
     def get_accounts():
         cursor = connection.cursor()
@@ -133,6 +139,7 @@ class Account:
                 account_list.append(account_info)
             return account_list
 
+    # initialize a customer and account using data from the DB
     @staticmethod
     def set_account(account_number):
         cursor = connection.cursor()
